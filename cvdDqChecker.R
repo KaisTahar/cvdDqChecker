@@ -126,7 +126,7 @@ ruleMeta <-list(
 # Import CORD data
 #------------------------------------------------------------------------------------------------------
 
-path<-"./Data/medData/studyData.csv"
+path<-"./Data/medData/syntheticData.csv"
 studyData <-read.table( path, sep=",", dec=",", header=T, na.strings=c("","NA"), encoding = "UTF-8")
 studyData<-harmonizeData(studyData, rPath, ruleMeta$mappRule, ruleMeta$cvdItem, ruleMeta$mappValue)
 studyData$basis_gebdatum <- getDateFormat(studyData$basis_gebdatum)
@@ -137,9 +137,9 @@ metrics <- dqChecker(studyData, "CVD", ndata, cdata, ddata, "basicItem", NULL, m
 dqRep <- cbind(metrics$parameters, metrics$indicators)
 dqRep <- cbind (getPatRecordMetrics("mnppsd"), dqRep)
 dqRep<-getUserSelectedMetrics(dqMetrics, dqRep)
-df <- data.frame(st_name= "TransitionCHF_UMG_trans", org_id="UMG", rep_date=as.Date(Sys.Date()))
+df <- data.frame(st_name= "SyntheticData", org_id="UMG", rep_date=as.Date(Sys.Date()))
 dqRep <- cbind(df, dqRep)
-expPath<- paste ("./Data/Export/DQ-Reports", dqRep$st_name,"_", dqRep$rep_date, ".xlsx", sep="")
+expPath<- paste ("./Data/Export/DQ-Reports_", dqRep$st_name, ".xlsx", sep="")
 endTime <- base::Sys.time()
 timeTaken <-  round (as.numeric (endTime - startTime, units = "mins"), 2)
 dqRep$exe_time <-timeTaken
