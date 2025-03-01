@@ -128,7 +128,7 @@ ruleMeta <-list(
 
 path<-"./Data/medData/syntheticData.csv"
 studyData <-read.table( path, sep=",", dec=",", header=T, na.strings=c("","NA"), encoding = "UTF-8")
-studyData<-harmonizeData(studyData, rPath, ruleMeta$mappRule, ruleMeta$cvdItem, ruleMeta$mappValue)
+studyData<-harmonizeStudyData(studyData, rPath, ruleMeta$mappRule, ruleMeta$cvdItem, ruleMeta$mappValue)
 studyData$basis_gebdatum <- getDateFormat(studyData$basis_gebdatum)
 #------------------------------------------------------------------------------------------------------
 # DQ Report and visualization
