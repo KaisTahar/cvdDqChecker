@@ -1,26 +1,25 @@
 default:
   #--------------------------------------------------------------------------------------------------------------------
-  # Setting path and local variables
+  # Setting path and local configuration parameters
   #--------------------------------------------------------------------------------------------------------------------
-  # v1) Set the study name and abbreviation
-  study_name: "Data Quality Assessments on Synthetic Data"
-  study_abbr: "SyntheticData"
+  # p1) Set the study name and abbreviation
+  studyName: "Data Quality Assessments on Synthetic Data"
   
-  # v2) Set the Name of your center 
-  organization_name: "UMG"
+  # p2) Set the Name of your center 
+  organizationName: "UMG"
   
-  # v3) Set the path to input data 
-  data_path: "./Data/medData/syntheticData.csv"
+  # p3) Set the path to input data 
+  dataPath: "./data/medData/syntheticData.csv"
   
-  # v4) Set the code list of missing data values
-  missing_code: !expr list ("",NA, "NULL")
+  # p4) Set the code list of missing data values
+  missingCode: !expr list (NA, "NULL", "")
   
-  # v5) Specify the path to the spreadsheet file containing the DQ rules
-  rule_path: "./Data/refData/DQ_rules.xlsx"
+  # p5) Specify the path to the spreadsheet file containing the DQ rules
+  rulePath: "./data/refData/dqRules.xlsx"
   
-  # v6) Set the path to the semantic annotations
-  semantic_path: "./Data/refData/semData.csv"
+  # p6) Set the path to the semantic annotations
+  semanticPath: "./data/refData/semData.csv"
   
-  # v7) Specify the path to the resulting visualizations and reports
-  export_path: "./Data/Export"
+  # p7) Specify the path to the resulting visualizations and reports
+  exportPath: "./data/export"
 

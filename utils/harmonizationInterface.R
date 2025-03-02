@@ -1,7 +1,7 @@
 #######################################################################################################
-#' @description Harmonization interface for quality assessment on cardiovascular disease (CVD) data.
+#' @description Harmonization interface for data quality (DQ) assessment on cardiovascular disease (CVD) data.
 #' This interface supports mapping locally used data items to the the basic data set of the German Centre for Cardiovascular Research (DZHK-BDS).
-#' The DZHK-BDS as a common data model facilitates the harmonized collection of patient data across different studies. 
+#' The DZHK-BDS as a common data model facilitates the harmonized collection and DQ assessments of CVD data across different studies. 
 #' @author Kais Tahar, University Medical Center Göttingen
 #######################################################################################################
 
