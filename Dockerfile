@@ -10,6 +10,7 @@ RUN R -e "install.packages('openxlsx')"
 RUN R -e "install.packages('stringi')"
 RUN R -e "install.packages('anytime')"
 RUN R -e "install.packages('ggplot2')"
+RUN R -e "install.packages('config')"
 
 # copy files
 COPY . .
