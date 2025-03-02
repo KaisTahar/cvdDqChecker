@@ -5,7 +5,7 @@
 rm(list = ls())
 setwd("./")
 # install required packages
-source("./R/installPackages.R")
+source("./utils/installPackages.R")
 #import dqLib and required packages
 library (dqLib)
 library (openxlsx)
@@ -17,9 +17,9 @@ options(warn=-1)
 # execution time
 startTime <- base::Sys.time()
 # configuration variables
-source("./R/config.R")
+source("./utils/config.R")
 # data harmonization
-source("./R/harmonizationInterface.R")
+source("./utils/harmonizationInterface.R")
 
 cat("####################################***CvdDqChecker***########################################### \n \n")
 # check missing packages
@@ -34,7 +34,7 @@ if (!is.empty(diff)) paste ("The following packages are missing:", toString (dif
 cat ("\n ####################################### Data Import ########################################## \n")
 
 #------------------------------------------------------------------------------------------------------
-# Setting metadata, report design, and required DQ metrics
+# Setting metadata and report design
 #------------------------------------------------------------------------------------------------------
 # defining metadata
 # numerical data items
@@ -54,43 +54,7 @@ catMeta<- data.frame(
     "basis_schlagtia", "basis_diabetes", "basis_hypertonie", "basis_dyslipi", "basis_pavk","basis_copd", "basis_malignom","basis_depression",
     "basis_choles_einheit",  "basis_krea_einheit",  "basis_haemo_einhe", "basis_ahf", "basis_alkoholkrank"
   )
-) 
-# semantic mapping of labels and symbolic names (also called code variables)
-semData <- read.table(semantic_path, sep=",",  dec=",", na.strings=c("","NA"), encoding = "UTF-8",header=TRUE)
-# Report Design
-sheetList <-list("DQ Metrics", "Outliers", "Contradictions", "Missings")
-meta1<- c( "mnppsd", "centername", "formname","basis_datum", "basis_groesse", "basis_gewicht", "basis_frequenz", "basis_systol","basis_diastol","basis_choles","basis_haemo", "basis_kreatinin")
-meta2<- c("mnppsd", "centername", "formname","basis_datum")
-design <- list ("Outliers"=meta1, "Contradictions"=meta2, "Missings"=meta2)
-
-############## Selection of DQ metrics ##################
-# select DQ indicators for completeness dimension from the publication DOI:10.1055/a-2006-1018.
-compInd= c(
-  "dqi_co_icr", 
-  "dqi_co_vcr"
 )
-# select DQ indicators for plausibility dimension
-plausInd= c( 
-  "dqi_pl_rpr", 
-  "dqi_pl_spr"
-)
-
-############ Selection of DQ parameters #################
-# select parameters for DQ report from the publication DOI:10.1055/a-2006-1018.
-param= c(
-  "aPatient",
-  "im",
-  "vm",
-  "im_misg",
-  "vm_misg",
-  #"s_inc",
-  "vo",
-  "vs_od",
-  "vc", 
-  "vs_cd",
-  "pat_dq_iss"
-)
-dqMetrics <- c(compInd, plausInd, param)
 # define meta data for the DQ rules
 ruleMeta <-list(
   mappRule="mappingRule",
@@ -115,24 +79,61 @@ ruleMeta <-list(
   minRslt="min(result)",
   maxRslt="max(result)"
 )
+# Report Design
+sheetList <-list("DQ Metrics", "Outliers", "Contradictions", "Missings")
+meta1<- c( "mnppsd", "centername", "formname","basis_datum", "basis_groesse", "basis_gewicht", "basis_frequenz", "basis_systol","basis_diastol","basis_choles","basis_haemo", "basis_kreatinin")
+meta2<- c("mnppsd", "centername", "formname","basis_datum")
+design <- list ("Outliers"=meta1, "Contradictions"=meta2, "Missings"=meta2)
 
+#------------------------------------------------------------------------------------------------------
+# Setting required DQ metrics and semantic mappings
+#------------------------------------------------------------------------------------------------------
+############## Selection of DQ metrics ##################
+# select DQ indicators for completeness dimension from the publication DOI:10.1055/a-2006-1018.
+compInd= c(
+  "dqi_co_icr", 
+  "dqi_co_vcr"
+)
+# select DQ indicators for plausibility dimension
+plausInd= c( 
+  "dqi_pl_rpr", 
+  "dqi_pl_spr"
+)
+############ Selection of DQ parameters #################
+# select parameters for DQ report from the publication DOI:10.1055/a-2006-1018.
+param= c(
+  "aPatient",
+  "im",
+  "vm",
+  "im_misg",
+  "vm_misg",
+  #"s_inc",
+  "vo",
+  "vs_od",
+  "vc", 
+  "vs_cd",
+  "pat_dq_iss"
+)
+dqMetrics <- c(compInd, plausInd, param)
+# semantic mapping of labels and symbolic names (also called code variables)
+semData <- read.table(semanticPath, sep=",",  dec=",", na.strings=c("","NA"), encoding = "UTF-8",header=TRUE)
 #------------------------------------------------------------------------------------------------------
 # Import study data
 #------------------------------------------------------------------------------------------------------
-studyData <-read.table(data_path, sep=",", dec=",", header=T, na.strings=c("","NA"), encoding = "UTF-8")
-studyData<-harmonizeStudyData(studyData, rule_path, ruleMeta$mappRule, ruleMeta$cvdItem, ruleMeta$mappValue)
+studyData <-read.table(dataPath, sep=",", dec=",", header=T, na.strings=c("","NA"), encoding = "UTF-8")
+studyData<-harmonizeStudyData(studyData, rulePath, ruleMeta$mappRule, ruleMeta$cvdItem, ruleMeta$mappValue)
 studyData$basis_gebdatum <- getDateFormat(studyData$basis_gebdatum)
 
 #------------------------------------------------------------------------------------------------------
 # DQ Report and visualization
 #------------------------------------------------------------------------------------------------------
-metrics <- dqChecker(studyData, "CVD", numMeta, catMeta, tempMeta, "basicItem", NULL, missing_code, rule_path, ruleMeta)
+metrics <- dqChecker(studyData, "CVD", numMeta, catMeta, tempMeta, "basicItem", NULL, missingCode, rulePath, ruleMeta)
 dqRep <- cbind(metrics$parameters, metrics$indicators)
 dqRep <- cbind (getPatRecordMetrics("mnppsd"), dqRep)
 dqRep<-getUserSelectedMetrics(dqMetrics, dqRep)
-df <- data.frame(st_name= study_name, org_id=organization_name, rep_date=as.Date(Sys.Date()))
+df <- data.frame(st_name= studyName, org_id=organizationName, rep_date=as.Date(Sys.Date()))
 dqRep <- cbind(df, dqRep)
-expPath<- paste (export_path, "/DQ-Reports_", study_abbr, ".xlsx", sep="")
+expPath<- paste (exportPath, "/dqReports.xlsx", sep="")
 endTime <- base::Sys.time()
 timeTaken <-  round (as.numeric (endTime - startTime, units = "mins"), 2)
 dqRep$exe_time <-timeTaken
@@ -140,9 +141,9 @@ report<-addSemantics(dqRep, semData, semData$Abbreviation)
 getLongReport(report, sheetList, design, expPath)
 top <- paste ("\n \n ####################################***CvdDqChecker***###########################################")
 msg <- paste ("\n Data quality assessments for Organization:", dqRep$org_id,
-              "\n Report date:", dqRep$rep_date,
-              "\n Patient number:", dqRep$aPatient,
-              "\n Item completeness rate:", dqRep$dqi_co_icr,
+              "\n Report Date:", dqRep$rep_date,
+              "\n Patient Number:", dqRep$aPatient,
+              "\n Item Completeness rate:", dqRep$dqi_co_icr,
               "\n Value completeness rate:", dqRep$dqi_co_vcr,
               "\n Range Plausibility Rate:", dqRep$dqi_pl_rpr,
               "\n Semantic Plausibility Rate:", dqRep$dqi_pl_spr,
@@ -159,7 +160,7 @@ bottom <- paste (
 cat(paste (top, msg, bottom, sep="\n"))
 
 # visualization of detected outliers and contradictions
-voPath = paste(export_path, "/Outliers", sep="")
+voPath = paste(exportPath, "/outliers", sep="")
 visualizeOutliers("basicItem", "vo" , "Total", voPath)
-voPath = paste(export_path, "/Contradictions", sep="")
+voPath = paste(exportPath, "/contradictions", sep="")
 visualizeContradictions("rID", "vc" ,"Total", voPath)
