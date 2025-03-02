@@ -4,6 +4,6 @@ authors:
 - family-names: "Tahar"
   given-names: "Kais"
   orcid: "https://orcid.org/0000-0001-9683-0575"
-title: "cvdDqChecker: A Set of Metrics and Methods for Harmonized Quality Assessments on Cardiovascular Disease Data"
+title: "CvdDqChecker: A Set of Metrics and Methods for Harmonized Quality Assessments on Cardiovascular Disease Data"
 year: 2025
 url: "https://github.com/KaisTahar/cvdDqChecker"
