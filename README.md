@@ -10,15 +10,20 @@ To conduct local DQ assessments, please follow the following instructions:
 
 2. Edit the file [`config.yaml`](https://github.com/KaisTahar/cvdDqChecker/blob/master/config.yaml) with your local variables (v1...v7)
    - Define your study name (v1) and organization name (v2) 
-   - Set the data input path (v3). This variable specifies which data set should be imported. You can, for example, define your path as follows: ``` dataPath="./data/medData/syntheticData.csv" ```
-   - Define the code list of missing data values (v4) else by default this variable is defined as follows: ``` missingCode: !expr list ("",NA, "NULL")``` 
-   - Set the path to the spreadsheet file containing the DQ rules (v5). By default, this path is set as follows: ``` rulePath: "./data/refData/dqRules.xlsx"``` 
-   - Set the path to the semantic annotations (v6). By default, this variable is set as follows: ``` semanticPath: "./data/refData/semData.csv" ```
-   - Specify the path to the resulting visualizations and DQ reports (v7). By default, the export path is set as follows: ``` exportPath: "./data/export"```
+   - Set the data input path (v3). This variable specifies which data set should be imported. By default this path is set as follows:
+     <br/>``` dataPath="./data/medData/syntheticData.csv" ```
+   - Define the code list of missing data values (v4) else by default this variable is defined as follows:
+     <br/>``` missingCode: !expr list ("",NA, "NULL")``` 
+   - Set the path to the spreadsheet file containing the DQ rules (v5). By default, this path is set as follows:
+     <br/>``` rulePath: "./data/refData/dqRules.xlsx"``` 
+   - Set the path to the semantic annotations (v6). By default, this variable is set as follows:
+     <br/>``` semanticPath: "./data/refData/semData.csv" ```
+   - Specify the path to the resulting visualizations and DQ reports (v7). By default, the export path is set as follows:
+     <br/>``` exportPath: "./data/export"```
 
 3. Once the data path and local variables are defined, you can run `CvdDqChecker` using Rstudio or Dockerfile. To avoid local dependency issues,  simply execute the command ```sudo docker-compose up``` to get the software up and running
 
-4. As a result,`CvdDqChecker` generates visualizations of detected outliers and contradictions, as well as an Excel file that contains reports on DQ metrics and detected DQ issues. These reports provide important information to help users identify the DQ issues and trace them back to their underlying causes, with the aim of enabling users to understand the DQ issues and their root reasons. The generated reports and plots are saved in the folder `./data/export`.
+4. As a result,`CvdDqChecker` generates visualizations of detected outliers and contradictions, as well as an Excel file that contains reports on DQ metrics and detected DQ issues. These reports provide important information to help users identify the DQ issues and trace them back to their underlying causes, with the aim of enabling users to understand the DQ issues and their root reasons. The generated reports and plots are saved in the folder `./data/export`
 
 ## 3. DQ Metrics and Reports
 The data quality library (dqLib) was employed as an R package to report on DQ issues and metrics. `dqLib` provides multiple metrics to assess different aspects of DQ. This library was used to select appropriate dimensions and indicators as well as to define specific DQ reports. The following generic indicators were employed in this study:
@@ -68,11 +73,12 @@ The data quality library (dqLib) was employed as an R package to report on DQ is
 ## 4. Examples
 
 - Some examples of reports on detected outliers and contradictions can be found in the `./data/export` folder
-- The [`./data/export`](https://github.com/KaisTahar/cvdDqChecker/tree/master/Data/Export) folder also contains exemplary visualizations generated using synthetic data
+- The [`./data/export`](https://github.com/KaisTahar/cvdDqChecker/tree/master/data/export) folder also contains exemplary visualizations generated using synthetic data
 
 ## 5. Notes
 
 - The developed software `CvdDqChecker` is compatible with [`dqLib 1.32.0`](https://github.com/KaisTahar/dqLib/releases/tag/v1.32.0). To install all required packages, please use the script `installPackages.R` located in the folder `./R` or just run the command `sudo docker-compose up`. This command will install the necessary packages and run the DQ assessment software.
 
 - To cite `CvdDqChecker`, please use the citation file `CITATION.cff`
+
 
