@@ -1,5 +1,5 @@
 #######################################################################################################
-#' @description Traceable and explainable assessments of cardiovascular disease (CVD) data.
+#' @description explainable and Traceable assessments of cardiovascular disease (CVD) data.
 #' @author Kais Tahar, University Medical Center Göttingen
 #######################################################################################################
 rm(list = ls())
@@ -37,96 +37,40 @@ cat ("\n ####################################### Data Import ###################
 # Setting metadata and report design
 #------------------------------------------------------------------------------------------------------
 
-# Numerical data items
-numMeta <- data.frame(
-  basicItem=c ("basis_groesse", "basis_gewicht", "basis_frequenz", "basis_systol",  "basis_diastol","basis_haemo",  "basis_kreatinin","basis_choles")
-)
-# Temporal data items
-tempMeta <- data.frame(
-  basicItem=c ("basis_datum", "basis_gebdatum" ,  "basis_exrauch", "basis_datum_blut",  "basis_menojahr", "basis_regeldat")
-)
-# Categorical data items
-catMeta<- data.frame(
-  basicItem=c (
-    "basis_hautfarbe", "basis_geschlecht", "basis_ethnie", "basis_meno", "basis_raucher" ,
-    "basis_khk", "basis_myokard","basis_family","basis_vorhof",  "basis_revas", 
-    "basis_bypass", "basis_herzklap","basis_herzklap_op", "basis_insuffizienz", "basis_kardmyopath","basis_schrittmacher", "basis_dialyse",
-    "basis_schlagtia", "basis_diabetes", "basis_hypertonie", "basis_dyslipi", "basis_pavk","basis_copd", "basis_malignom","basis_depression",
-    "basis_choles_einheit",  "basis_krea_einheit",  "basis_haemo_einhe", "basis_ahf", "basis_alkoholkrank"
-  )
-)
 # Metadata for the DQ rules
-ruleMeta <-list(
-                  mappingRules="mappingRules",
-                  cvdItem="dzhkBasicDataSet",
-                  mappingValue ="synonym",
-                  missingRules="missingRules",
-                  rangeRules="rangeRules",
-                  mathRules="mathRules",
-                  logicRules="logicalRules",
-                  ruleID ="ruleID",
-                  item1 ="item1",
-                  item2 ="item2",
-                  item3 ="item3",
-                  valueItem1 ="value(item1)",
-                  valueItem2 ="value(item2)",
-                  valueItem3 ="value(item3)",
-                  maxItem1 ="max(item1)",
-                  minItem1 ="min(item1)",
-                  mathOpr ="mathOperator",
-                  unit ="unit",
-                  minRslt="min(result)",
-                  maxRslt="max(result)"
-                )
-# Report Design
-sheetList <-list("DQ Metrics", "Outliers", "Contradictions", "Missings")
-outlierReportMeta<- c("mnppsd", "centername", "formname","basis_datum", "basis_groesse", "basis_gewicht", "basis_frequenz", "basis_systol","basis_diastol","basis_choles","basis_haemo", "basis_kreatinin", "outliers")
-missingReportMeta<- c("mnppsd", "centername", "formname","basis_datum", "missing_values", "missing_items")
-contraReportMeta<- c("mnppsd", "centername", "formname","basis_datum", "contradictions")
+ruleMeta_df <- read.xlsx(xlsxFile = domainMetadata, sheet = "Rule_metadata", skipEmptyRows = FALSE)
+ruleMeta <- split(ruleMeta_df$Rule_metadata, ruleMeta_df$Abbreviation)
+
+# Setting the report design and required DQ metrics
+repData <- read.xlsx(xlsxFile = domainMetadata, sheet = "Report_metadata", skipEmptyRows = FALSE)
+dqMetrics <-repData$Selected_DQ_metric[!is.na(repData$Selected_DQ_metric)]
+sheetList <- repData$Spreadsheet_label[!is.na(repData$Spreadsheet_label)]
+outlierReportMeta <- repData$Outliers_report_metadata[!is.na(repData$Outliers_report_metadata)]
+missingReportMeta <- repData$Missings_report_metadata[!is.na(repData$Missings_report_metadata)] 
+contraReportMeta <- repData$Contradictions_report_metadata[!is.na(repData$Contradictions_report_metadata)]
 design <- list (outlierReportMeta, contraReportMeta, missingReportMeta)
-
+semData <-subset(repData, select=c(Label,Abbreviation))
 #------------------------------------------------------------------------------------------------------
-# Setting required DQ metrics and semantic mappings
+# Setting required metadata
 #------------------------------------------------------------------------------------------------------
-
-# Select DQ indicators for the completeness and plausibility dimensions from the publication with DOI:10.1055/a-2006-1018.
-compInd= c(
-            "dqi_co_icr", 
-            "dqi_co_vcr"
-          )
-plausInd= c( 
-              "dqi_pl_rpr", 
-              "dqi_pl_spr"
-           )
-# Selection of DQ parameters
-param= c(
-          "aPatient",
-          "im",
-          "vm",
-          "im_misg",
-          "vm_misg",
-          "vo",
-          "vs_od",
-          "vc", 
-          "vs_cd",
-          "pat_dq_iss"
-        )
-dqMetrics <- c(compInd, plausInd, param)
-# Semantic mapping of labels and symbolic names (also called code variables)
-semData <- read.table(semanticPath, sep=",",  dec=",", na.strings=c("","NA"), encoding = "UTF-8",header=TRUE)
+metadata <- read.xlsx(xlsxFile = domainMetadata, sheet = "Metadata", skipEmptyRows = FALSE)
+# Numerical data items
+numMeta <- data.frame(basicItem=metadata$Numerical_data_item[!is.na(metadata$Numerical_data_item)])
+# Temporal data items
+tempMeta <-data.frame(basicItem=metadata$Temporal_data_item[!is.na(metadata$Temporal_data_item)])
+# Categorical data items
+catMeta<- data.frame(basicItem=metadata$Categorical_data_item[!is.na(metadata$Categorical_data_item)])
 
 #------------------------------------------------------------------------------------------------------
 # Import study data
 #------------------------------------------------------------------------------------------------------
-
 studyData <-read.table(dataPath, sep=",", dec=",", header=T, na.strings=c("","NA"), encoding = "UTF-8")
-studyData<-harmonizeStudyData(studyData, rulePath, ruleMeta$mappingRules, ruleMeta$cvdItem, ruleMeta$mappingValue)
+studyData<-harmonizeStudyData(studyData, domainMetadata, "Semantic_harmonization", "DZHK_basic_data_item", "Synonym")
 studyData$basis_gebdatum <- getDateFormat(studyData$basis_gebdatum)
 
 #------------------------------------------------------------------------------------------------------
 # DQ Report and visualization
 #------------------------------------------------------------------------------------------------------
-
 metrics <- dqChecker(studyData, "CVD", numMeta, catMeta, tempMeta, "basicItem", NULL, missingCode, rulePath, ruleMeta)
 dqRep <- cbind(metrics$parameters, metrics$indicators)
 dqRep <- cbind (getPatRecordMetrics("mnppsd"), dqRep)
@@ -160,6 +104,6 @@ bottom <- paste (
 cat(paste (top, msg, bottom, sep="\n"))
 # Visualization of detected outliers and contradictions
 voPath = paste(exportPath, "/outliers", sep="")
-visualizeOutliers("basicItem", "vo" , "total", voPath)
+visualizeOutliers("basicItem", "vo" , "total", voPath, a=TRUE, b=12, c=11, d=4)
 voPath = paste(exportPath, "/contradictions", sep="")
-visualizeContradictions("rID", "vc" ,"total", voPath)
+visualizeContradictions("rID", "vc" ,"total", voPath, a=TRUE, b=12, c=11, d=4)

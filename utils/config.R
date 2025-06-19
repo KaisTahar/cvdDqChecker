@@ -32,10 +32,10 @@ if (exists("rulePath", where = conf) && nchar(conf$rulePath) >= 2) {
   rulePath= conf$rulePath
 }else stop("No rule path found, please set the rulePath variable (v5) in the config file")
 
-# p6) check the path to the semantic annotations
-if (exists("semanticPath", where = conf) && nchar(conf$semanticPath) >= 2) {
-  semanticPath= conf$semanticPath
-}else stop("No path to the semantic annotations found, please set the semanticPath variable (v6) in the config file")
+# p6) check the path to the domain metadata and semantic annotations
+if (exists("domainMetadata", where = conf) && nchar(conf$domainMetadata) >= 2) {
+  domainMetadata= conf$domainMetadata
+}else stop("No path to the domain metadata found, please set the path variable (v6) in the config file")
 
 # p7) check the export path configuration
 if (exists("exportPath", where = conf) && nchar(conf$exportPath) >= 2) {

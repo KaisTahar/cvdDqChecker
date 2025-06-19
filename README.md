@@ -1,7 +1,7 @@
-# <p align="center"> CvdDqChecker: A Software Solution for Traceable and Explainable Assessments of Cardiovascular Disease Data Quality </p>
+# <p align="center"> CvdDqChecker: A Software Solution for Explainable and Traceable Assessments of Cardiovascular Disease Data Quality </p>
 
 ## 1. Description
-This repository provides a set of metrics and harmonized methods for assessing the quality of cardiovascular disease (CVD) data. The developed software `CvdDqChecker` enables traceable and explainable data quality (DQ) assessments. Specifically, the generated reports provide detailed information to explain the detected DQ issues and help users trace them back to their sources and underlying causes. `CvdDqChecker` also enables the detection and visualization of plausibility issues based on predefined logical and mathematical rules. To improve usability, `CvdDqChecker` allows users to specify the DQ rules using spreadsheets. The current version was validated using synthetic and real-world data on CVDs. Exemplary DQ reports and visualizations are available in section 4.
+This repository provides a set of metrics and harmonized methods for assessing the quality of cardiovascular disease (CVD) data. The developed software `CvdDqChecker` enables explainable and traceable data quality (DQ) assessments. Specifically, the generated reports provide detailed information to explain the detected DQ issues and help users trace them back to their sources and underlying causes. `CvdDqChecker` also enables the detection and visualization of plausibility issues based on predefined logical and mathematical rules. To improve usability, `CvdDqChecker` allows users to specify the DQ rules using spreadsheets. The current version was validated using synthetic and real-world data on CVDs. Exemplary DQ reports and visualizations are available in section 4.
 
 ## 2. Local Execution
 To conduct local DQ assessments, please follow the following instructions:
@@ -16,9 +16,9 @@ To conduct local DQ assessments, please follow the following instructions:
    - Define the code list of missing data values (p4) else by default this parameter is defined as follows:
      <br/>``` missingCode: !expr list (NA, "NULL", "")``` 
    - Set the path to the spreadsheet file containing the DQ rules (p5). By default, this path is set as follows:
-     <br/>``` rulePath: "./data/refData/dqRules.xlsx"``` 
-   - Set the path to the semantic annotations (p6). By default, this parameter is set as follows:
-     <br/>``` semanticPath: "./data/refData/semData.csv" ```
+     <br/>``` rulePath: "./data/refData/dq_rules.xlsx"``` 
+   - Set the path to the metadata and semantic annotations (p6). By default, this parameter is set as follows:
+     <br/>``` domainMetadata: "./data/refData/domain_metadata.xlsx" ```
    - Specify the path to the resulting visualizations and DQ reports (p7). By default, the export path is set as follows:
      <br/>``` exportPath: "./data/export"```
 
@@ -79,7 +79,7 @@ The data quality library (dqLib) was employed as an R package to report on DQ is
 
 ## 5. Notes
 
-- The developed software `CvdDqChecker` is compatible with [`dqLib 1.32.0`](https://github.com/KaisTahar/dqLib/releases/tag/v1.32.0). To install all required packages, please use the script `installPackages.R` located in the folder `./R` or just run the command `sudo docker-compose up`. This command will install the necessary packages and run the DQ assessment software.
+- The developed software `CvdDqChecker` is compatible with [`dqLib 1.32.1`](https://github.com/KaisTahar/dqLib/releases/tag/v1.32.1). To install all required packages, please use the script `installPackages.R` located in the folder `./R` or just run the command `sudo docker-compose up`. This command will install the necessary packages and run the DQ assessment software.
 
 - To cite `CvdDqChecker`, please use the citation file `CITATION.cff`
 

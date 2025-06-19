@@ -9,16 +9,16 @@ default:
   organizationName: "UMG"
   
   # p3) Set the path to input data 
-  dataPath: "./data/medData/syntheticData.csv"
+  dataPath: "./data/medData/synthetic_data.csv"
   
   # p4) Set the code list of missing data values
   missingCode: !expr list (NA, "NULL", "")
   
   # p5) Specify the path to the spreadsheet file containing the DQ rules
-  rulePath: "./data/refData/dqRules.xlsx"
+  rulePath: "./data/refData/dq_rules.xlsx"
   
-  # p6) Set the path to the semantic annotations
-  semanticPath: "./data/refData/semData.csv"
+  # p6) Set the path to the metadata and semantic annotations
+  domainMetadata: "./data/refData/domain_metadata.xlsx"
   
   # p7) Specify the path to the resulting visualizations and reports
   exportPath: "./data/export"
