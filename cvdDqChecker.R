@@ -1,5 +1,5 @@
 #######################################################################################################
-#' @description Traceable and explainable assessments of cardiovascular disease (CVD) data.
+#' @description explainable and Traceable assessments of cardiovascular disease (CVD) data.
 #' @author Kais Tahar, University Medical Center Göttingen
 #######################################################################################################
 rm(list = ls())
